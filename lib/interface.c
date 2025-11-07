@@ -1,15 +1,13 @@
-/* Code to manipulate interface information, shared between ifconfig and
-   netstat.
-
-   10/1998 partly rewriten by Andi Kleen to support an interface list.
-   I don't claim that the list operations are efficient @).
-
-   8/2000  Andi Kleen make the list operations a bit more efficient.
-   People are crazy enough to use thousands of aliases now.
-
-   $Id: interface.c,v 1.35 2011-01-01 03:22:31 ecki Exp $
+/*
+ * lib/interface.c  Code to manipulate interface information,
+ *                  shared between ifconfig and netstat.
+ *
+ * 10/1998 partly rewriten by Andi Kleen to support an interface list.
+ * I don't claim that the list operations are efficient @).
+ *
+ * 8/2000  Andi Kleen make the list operations a bit more efficient.
+ * People are crazy enough to use thousands of aliases now.
  */
-
 #include "config.h"
 
 #include <sys/types.h>
@@ -211,32 +209,46 @@ out:
 }
 
 static const char *get_name(char *name, const char *p)
+/* Safe version - guarantees at most IFNAMSIZ-1 bytes are copied
+   and the destination buffer is always NUL-terminated. */
 {
-    while (isspace(*p))
-	p++;
-    while (*p) {
-	if (isspace(*p))
-	    break;
-	if (*p == ':') {	/* could be an alias */
-		const char *dot = p++;
- 		while (*p && isdigit(*p)) p++;
-		if (*p == ':') {
-			/* Yes it is, backup and copy it. */
-			p = dot;
-			*name++ = *p++;
-			while (*p && isdigit(*p)) {
-				*name++ = *p++;
-			}
-		} else {
-			/* No, it isn't */
-			p = dot;
-	    }
-	    p++;
-	    break;
-	}
-	*name++ = *p++;
+    char       *dst = name;                 /* current write ptr          */
+    const char *end = name + IFNAMSIZ - 1;  /* last byte we may write     */
+
+    /* Skip leading white-space. */
+    while (isspace((unsigned char)*p))
+        ++p;
+
+    /* Copy until white-space, end of string, or buffer full. */
+    while (*p && !isspace((unsigned char)*p) && dst < end) {
+        if (*p == ':') {                    /* possible alias veth0:123:  */
+            const char *dot = p;            /* remember the colon         */
+            ++p;
+            while (*p && isdigit((unsigned char)*p))
+                ++p;
+
+            if (*p == ':') {                /* confirmed alias            */
+                p = dot;                    /* rewind and copy it all     */
+
+                /* copy the colon */
+                if (dst < end)
+                    *dst++ = *p++;
+
+                /* copy the digits */
+                while (*p && isdigit((unsigned char)*p) && dst < end)
+                    *dst++ = *p++;
+            } else {              /* if so treat as normal */
+                p = dot;
+            }
+            if (*p == ':')                  /* consume trailing colon */
+                ++p;
+            break;                          /* interface name ends here */
+        }
+
+        *dst++ = *p++;                      /* ordinary character copy */
     }
-    *name++ = '\0';
+
+    *dst = '\0';                            /* always NUL-terminate */
     return p;
 }
 
@@ -421,12 +433,13 @@ int if_fetch(struct interface *ife)
     ife->flags = ifr.ifr_flags;
 
     safe_strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+    memset(ife->hwaddr, 0, sizeof(ife->hwaddr));  // clean out trailing
     if (ioctl(skfd, SIOCGIFHWADDR, &ifr) < 0)
-	memset(ife->hwaddr, 0, 32);
-    else
-	memcpy(ife->hwaddr, ifr.ifr_hwaddr.sa_data, 8);
-
-    ife->type = ifr.ifr_hwaddr.sa_family;
+        ife->type = -1; // 0 is ARPHRD_NETROM, maybe ARPHRD_VOID?
+    else {
+        memcpy(ife->hwaddr, ifr.ifr_hwaddr.sa_data, MAC_ADDRESS_MAX_LENGTH);
+        ife->type = ifr.ifr_hwaddr.sa_family;
+    }
 
     safe_strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
     if (ioctl(skfd, SIOCGIFMTU, &ifr) < 0)
@@ -454,12 +467,6 @@ int if_fetch(struct interface *ife)
 #endif
     }
 #endif
-
-    safe_strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
-    if (ioctl(skfd, SIOCGIFMAP, &ifr) < 0)
-	memset(&ife->map, 0, sizeof(struct ifmap));
-    else
-	memcpy(&ife->map, &ifr.ifr_map, sizeof(struct ifmap));
 
     safe_strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
     if (ioctl(skfd, SIOCGIFMAP, &ifr) < 0)
@@ -901,9 +908,9 @@ void ife_print_long(struct interface *ptr)
 		ptr->stats.rx_packets,
 	       rx, (unsigned long)(short_rx / 10),
 	       (unsigned long)(short_rx % 10), Rext);
-	if (can_compress) {
+	if (can_compress || ptr->stats.rx_compressed > 0) {
   	    printf("        ");
-	    printf(_("RX compressed:%lu\n"), ptr->stats.rx_compressed);
+	    printf(_("RX compressed %lu\n"), ptr->stats.rx_compressed);
 	}
 	printf("        ");
 	printf(_("RX errors %lu  dropped %lu  overruns %lu  frame %lu\n"),
@@ -916,12 +923,12 @@ void ife_print_long(struct interface *ptr)
 		ptr->stats.tx_packets,
 	        tx, (unsigned long)(short_tx / 10),
 	        (unsigned long)(short_tx % 10), Text);
-	if (can_compress) {
+	if (can_compress || ptr->stats.tx_compressed > 0) {
   	    printf("        ");
 	    printf(_("TX compressed %lu\n"), ptr->stats.tx_compressed);
 	}
 	printf("        ");
-	printf(_("TX errors %lu  dropped %lu overruns %lu  carrier %lu  collisions %lu\n"),
+	printf(_("TX errors %lu  dropped %lu  overruns %lu  carrier %lu  collisions %lu\n"),
 	       ptr->stats.tx_errors,
 	       ptr->stats.tx_dropped, ptr->stats.tx_fifo_errors,
 	       ptr->stats.tx_carrier_errors, ptr->stats.collisions);

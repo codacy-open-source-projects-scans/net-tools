@@ -6,8 +6,6 @@
  *              NET-3 Networking Distribution for the LINUX operating
  *              system.
  *
- * Version:     $Id: netstat.c,v 1.73 2011-04-20 01:35:22 ecki Exp $
- *
  * Authors:     Fred Baumgarten, <dc6iq@insu1.etec.uni-karlsruhe.de>
  *              Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
  *              Phil Packer, <pep@wicked.demon.co.uk>
@@ -22,29 +20,29 @@
  *
  * Modified:
  *
- *960116 {1.01} Bernd Eckenfels:        verbose, cleanups
- *960204 {1.10} Bernd Eckenfels:        aftrans, usage, new route_info,
+ *960116        Bernd Eckenfels:        verbose, cleanups
+ *960204        Bernd Eckenfels:        aftrans, usage, new route_info,
  *                                      DLFT_AF
- *960204 {1.11} Bernd Eckenfels:        netlink support
- *960204 {1.12} Bernd Eckenfels:        route_init()
- *960215 {1.13} Bernd Eckenfels:        netlink_print honors HAVE_
- *960217 {1.14} Bernd Eckenfels:        masq_info from Jos Vos and
+ *960204        Bernd Eckenfels:        netlink support
+ *960204        Bernd Eckenfels:        route_init()
+ *960215        Bernd Eckenfels:        netlink_print honors HAVE_
+ *960217        Bernd Eckenfels:        masq_info from Jos Vos and
  *                                      ax25_info from Jonathan Naylor.
- *960218 {1.15} Bernd Eckenfels:        ipx_info rewritten, -e for tcp/ipx
- *960220 {1.16} Bernd Eckenfels:        minor output reformats, -a for -x
- *960221 {1.17} Bernd Eckenfels:        route_init->getroute_init
- *960426 {1.18} Bernd Eckenfels:        new RTACTION, SYM/NUM, FIB/CACHE
- *960517 {1.19} Bernd Eckenfels:        usage() spelling fix and --unix inode,
+ *960218        Bernd Eckenfels:        ipx_info rewritten, -e for tcp/ipx
+ *960220        Bernd Eckenfels:        minor output reformats, -a for -x
+ *960221        Bernd Eckenfels:        route_init->getroute_init
+ *960426        Bernd Eckenfels:        new RTACTION, SYM/NUM, FIB/CACHE
+ *960517        Bernd Eckenfels:        usage() spelling fix and --unix inode,
  *                                      ':' is part of sock_addr for --inet
- *960822 {x.xx} Frank Strauss:          INET6 support
+ *960822        Frank Strauss:          INET6 support
  *
- *970406 {1.33} Philip Copeland         Added snmp reporting support module -s
+ *970406        Philip Copeland         Added snmp reporting support module -s
  *                                      code provided by Andi Kleen
  *                                      (relly needs to be kernel hooked but
  *                                      this will do in the meantime)
  *                                      minor header file misplacement tidy up.
- *980815 {1.xx} Stephane Fillod:       X.25 support
- *980411 {1.34} Arnaldo Carvalho        i18n: catgets -> gnu gettext, substitution
+ *980815        Stephane Fillod:       X.25 support
+ *980411        Arnaldo Carvalho        i18n: catgets -> gnu gettext, substitution
  *                                      of sprintf for snprintf
  *10/1998	Andi Kleen              Use new interface primitives.
  *990101 {1.36}	Bernd Eckenfels		usage updated to include -s and -C -F,
@@ -52,14 +50,14 @@
  *					removed broken NETLINK Support
  *					fixed format for /proc/net/udp|tcp|raw
  *					added -w,-t,-u TcpExt support to -s
- *990131 {1.37} Jan Kratochvil          added -p for prg_cache() & friends
+ *990131        Jan Kratochvil          added -p for prg_cache() & friends
  *                                      Flames to <short@ucw.cz>.
  *              Tuan Hoang              added IGMP support for IPv4 and IPv6
  *
- *990420 {1.38} Tuan Hoang              removed a useless assignment from igmp_do_one()
- *20010404 {1.39} Arnaldo Carvalho de Melo - use setlocale
- *20081201 {1.42} Brian Micek           added -L|--udplite options for RFC 3828
- *20020722 {1.51} Thomas Preusser       added SCTP over IPv4 support
+ *990420        Tuan Hoang              removed a useless assignment from igmp_do_one()
+ *20010404        Arnaldo Carvalho de Melo - use setlocale
+ *20081201        Brian Micek           added -L|--udplite options for RFC 3828
+ *20020722        Thomas Preusser       added SCTP over IPv4 support
  *
  *              This program is free software; you can redistribute it
  *              and/or  modify it under  the terms of  the GNU General
@@ -470,7 +468,8 @@ static void prg_cache_load(void)
 		else
 		    cmdlp = cmdlbuf;
 	    }
-
+	    // pid can be up to 10, use rest from commandline start.
+	    // #pragma GCC diagnostic ignored "-Wformat-truncation"?
 	    snprintf(finbuf, sizeof(finbuf), "%s/%s", direproc->d_name, cmdlp);
 #if HAVE_SELINUX
 	    if (getpidcon(atoi(direproc->d_name), &scon) == -1) {
@@ -1763,8 +1762,7 @@ static int ipx_info(void)
 	       sad, dad, &txq, &rxq, &state, &uid);
 	if ((st = rindex(sad, ':'))) {
 	    *st++ = '\0';
-	    sscanf(st, "%X", &sport);	/* net byt order */
-	    sport = ntohs(sport);
+	    sscanf(st, "%X", &sport);
 	} else {
 	    EINTERN("netstat.c", "ipx socket format error in source port");
 	    fclose(f);
@@ -1774,8 +1772,7 @@ static int ipx_info(void)
 	if (strcmp(dad, "Not_Connected") != 0) {
 	    if ((st = rindex(dad, ':'))) {
 		*st++ = '\0';
-		sscanf(st, "%X", &dport);	/* net byt order */
-		dport = ntohs(dport);
+		sscanf(st, "%X", &dport);
 	    } else {
 		EINTERN("netstat.c", "ipx socket format error in destination port");
 		fclose(f);
@@ -1801,13 +1798,13 @@ static int ipx_info(void)
 	/* Fetch and resolve the Source */
 	(void) ap->input(0, sad, &sa);
 	safe_strncpy(buf, ap->sprint(&sa, flag_not & FLAG_NUM_HOST), sizeof(buf));
-	snprintf(sad, sizeof(sad), "%s:%04X", buf, sport);
+	snprintf(sad, sizeof(sad), "%.40s:%04X", buf, sport);
 
 	if (!nc) {
 	    /* Fetch and resolve the Destination */
 	    (void) ap->input(0, dad, &sa);
 	    safe_strncpy(buf, ap->sprint(&sa, flag_not & FLAG_NUM_HOST), sizeof(buf));
-	    snprintf(dad, sizeof(dad), "%s:%04X", buf, dport);
+	    snprintf(dad, sizeof(dad), "%.40s:%04X", buf, dport);
 	} else
         safe_strncpy(dad, "-", sizeof(dad));
 
@@ -2050,6 +2047,7 @@ int main
 	{"programs", 0, 0, 'p'},
 	{"verbose", 0, 0, 'v'},
 	{"statistics", 0, 0, 's'},
+	{"notrim", 0, 0, 'T'}, // alias for W
 	{"wide", 0, 0, 'W'},
 	{"numeric", 0, 0, 'n'},
 	{"numeric-hosts", 0, 0, '!'},
@@ -2116,6 +2114,7 @@ int main
 	    flag_int++;
 	    break;
 	case 'W':
+	case 'T':
 	    flag_wide++;
 	    break;
 	case 'n':

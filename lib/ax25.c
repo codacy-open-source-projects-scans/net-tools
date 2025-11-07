@@ -1,13 +1,6 @@
 /*
- * lib/ax25.c This file contains an implementation of the "AX.25"
+ * lib/ax25.c   This file contains an implementation of the "AX.25"
  *              support functions.
- *
- * Version:     $Id: ax25.c,v 1.9 1999/09/27 11:00:45 philip Exp $
- *
- * NOTE:        I will redo this module as soon as I got the libax25.a
- *              library sorted out.  This library contains some useful
- *              and often used address conversion functions, database
- *              lookup stuff, and more of the like.
  *
  * Author:      Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
  *              Copyright 1993 MicroWalt Corporation
@@ -47,9 +40,10 @@ static char AX25_errmsg[128];
 
 extern struct aftype ax25_aftype;
 
+// align with NETROM_orint
 static const char *AX25_print(const char *ptr)
 {
-    static char buff[8];
+    static char buff[10]; // N0CALL-15
     int i;
 
     for (i = 0; i < 6; i++) {
@@ -58,9 +52,14 @@ static const char *AX25_print(const char *ptr)
 	    buff[i] = '\0';
     }
     buff[6] = '\0';
+
+    // add SSID
     i = ((ptr[6] & 0x1E) >> 1);
-    if (i != 0)
-	sprintf(&buff[strlen(buff)], "-%d", i);
+    if (i != 0) {
+        int l = strlen(buff);
+        snprintf(&buff[l], sizeof(buff)-l, "-%d", i);
+    }
+
     return (buff);
 }
 

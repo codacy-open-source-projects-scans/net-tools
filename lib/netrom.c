@@ -2,8 +2,6 @@
  * lib/netrom.c       This file contains an implementation of the "NET/ROM"
  *              support functions for the NET-2 base distribution.
  *
- * Version:     $Id: netrom.c,v 1.8 2000/03/05 11:26:03 philip Exp $
- *
  * NOTE:        I will redo this module as soon as I got the libax25.a
  *              library sorted out.  This library contains some useful
  *              and often used address conversion functions, database
@@ -13,7 +11,7 @@
  *              Copyright 1993 MicroWalt Corporation
  *
  * Changes:
- * 980701 {1.21} Arnaldo Carvalho de Melo - GNU gettext instead of catgets,
+ * 980701        Arnaldo Carvalho de Melo - GNU gettext instead of catgets,
  *                                          strncpy instead of strcpy for
  *                                          i18n strings
  *
@@ -54,7 +52,7 @@ extern struct aftype netrom_aftype;
 
 static const char *NETROM_print(const char *ptr)
 {
-    static char buff[8];
+    static char buff[10]; // N0CALL-15\0
     int i;
 
     for (i = 0; i < 6; i++) {
@@ -63,9 +61,15 @@ static const char *NETROM_print(const char *ptr)
 	    buff[i] = '\0';
     }
     buff[6] = '\0';
+
+    // add SSID
     i = ((ptr[6] & 0x1E) >> 1);
     if (i != 0)
-	sprintf(&buff[strlen(buff)], "-%d", i);
+    {
+        int l = strlen(buff); // 0-6
+        snprintf(&buff[l],sizeof(buff)-l, "-%d", i);
+    }
+
     return (buff);
 }
 

@@ -2,15 +2,13 @@
  * lib/ppp.c  This file contains the SLIP support for the NET-2 base
  *              distribution.
  *
- * Version:     $Id: ppp.c,v 1.4 2000/03/05 11:26:03 philip Exp $
- *
  * Author:      Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
  *              Copyright 1993 MicroWalt Corporation
  *
  *              Modified by Alan Cox, May 94 to cover NET-3
  *
  * Changes:
- * 980701 {1.12} Arnaldo Carvalho de Melo - GNU gettext instead of catgets
+ * 980701        Arnaldo Carvalho de Melo - GNU gettext instead of catgets
  *
  *              This program is free software; you can redistribute it
  *              and/or  modify it under  the terms of  the GNU General

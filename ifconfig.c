@@ -3,8 +3,6 @@
  *              that either displays or sets the characteristics of
  *              one or more of the system's networking interfaces.
  *
- * Version:     $Id: ifconfig.c,v 1.59 2011-01-01 03:22:31 ecki Exp $
- *
  * Author:      Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
  *              and others.  Copyright 1993 MicroWalt Corporation
  *
@@ -17,7 +15,7 @@
  * Patched to support 'add' and 'del' keywords for INET(4) addresses
  * by Mrs. Brisby <mrs.brisby@nimh.org>
  *
- * {1.34} - 19980630 - Arnaldo Carvalho de Melo <acme@conectiva.com.br>
+ *        - 19980630 - Arnaldo Carvalho de Melo <acme@conectiva.com.br>
  *                     - gettext instead of catgets for i18n
  *          10/1998  - Andi Kleen. Use interface list primitives.
  *	    20001008 - Bernd Eckenfels, Patch from RH for setting mtu
@@ -102,7 +100,7 @@ static int if_print(char *ifname)
     int res;
 
     if (ife_short)
-	printf(_("Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg\n"));
+	printf(_("Iface             MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg\n"));
 
     if (!ifname) {
 	res = for_all_interfaces(do_if_print, &opt_a);
@@ -330,6 +328,9 @@ int main(int argc, char **argv)
     }
     /* No. Fetch the interface name. */
     spp = argv;
+    size_t len = strlen(*spp);
+    if (len >= IFNAMSIZ)
+	fprintf(stderr, _("Warning: truncating interface name %s length %lu to %u\n"), *spp, len, IFNAMSIZ-1);
     safe_strncpy(ifr.ifr_name, *spp++, IFNAMSIZ);
     if (*spp == (char *) NULL) {
 	int err = if_print(ifr.ifr_name);
@@ -340,13 +341,16 @@ int main(int argc, char **argv)
     /* The next argument is either an address family name, or an option. */
     if ((ap = get_aftype(*spp)) != NULL)
 	spp++; /* it was a AF name */
-    else
+    else {
 	ap = get_aftype(DFLT_AF);
-
-    if (ap) {
-	addr_family = ap->af;
-	skfd = ap->fd;
+	if (ap == NULL) {
+            fprintf(stderr, _("ifconfig: Default address family %s is unknown. How can that be?\n"), DFLT_AF);
+            exit(1);
+	}
     }
+
+    addr_family = ap->af;
+    skfd = ap->fd;
 
     /* Process the remaining arguments. */
     while (*spp != (char *) NULL) {

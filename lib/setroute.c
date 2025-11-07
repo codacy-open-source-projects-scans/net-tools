@@ -7,15 +7,13 @@
  *              NET-3 Networking Distribution for the LINUX operating
  *              system. (net-tools, net-drivers)
  *
- * Version:     $Id: setroute.c,v 1.4 2000/05/20 13:38:10 pb Exp $
- *
  * Author:      Bernd 'eckes' Eckenfels <net-tools@lina.inka.de>
  *              Copyright 1999 Bernd Eckenfels, Germany
  *
  * Modifications:
  *
- *960221 {0.01} Bernd Eckenfels:        generated from getroute.c
- *960413 {0.02} Bernd Eckenfels:        new RTACTION support
+ *960221        Bernd Eckenfels:        generated from getroute.c
+ *960413        Bernd Eckenfels:        new RTACTION support
  *960809        Frank Strauss:          INET6
  *
  *              This program is free software; you can redistribute it

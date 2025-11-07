@@ -1,16 +1,14 @@
 /*
- * lib/inet6.c        This file contains an implementation of the "INET6"
+ * lib/inet6.c  This file contains an implementation of the "INET6"
  *              support functions for the net-tools.
  *              (most of it copied from lib/inet.c 1.26).
- *
- * Version:     $Id: inet6.c,v 1.13 2010-07-05 22:52:00 ecki Exp $
  *
  * Author:      Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
  *              Copyright 1993 MicroWalt Corporation
  *
  * Modified:
- *960808 {0.01} Frank Strauss :         adapted for IPv6 support
- *980701 {0.02} Arnaldo C. Melo:        GNU gettext instead of catgets
+ *960808        Frank Strauss :         adapted for IPv6 support
+ *980701        Arnaldo C. Melo:        GNU gettext instead of catgets
  *990824        Bernd Eckenfels:	clear members for selecting v6 address
  *
  *              This program is free software; you can redistribute it

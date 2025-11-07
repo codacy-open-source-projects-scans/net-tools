@@ -2,10 +2,6 @@
  * lib/ddp_gr.c         Prinbting of DDP (AppleTalk) routing table
  *                      used by the NET-LIB.
  *
- * NET-LIB
- *
- * Version:     $Id: ddp_gr.c,v 1.4 2002/06/02 05:25:15 ecki Exp $
- *
  * Author:      Ajax <ajax@firest0rm.org>
  *
  * Modification:
@@ -73,7 +69,8 @@ int DDP_rprint(int options)
         return 1;
     }
 
-    if (fscanf(fp, "%ms %ms %ms %ms\n", &dest, &gw, &flags, &dev))
+    // eat header line, the if makes code scanner happy
+    if (fscanf(fp, "%ms %ms %ms %ms\n", &dest, &gw, &flags, &dev) == 4)
 		/* eat line */;
     free(dest); free(gw); free(flags); free(dev);
 

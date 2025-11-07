@@ -1,15 +1,13 @@
 /*
- * lib/hw.c   This file contains the top-level part of the hardware
+ * lib/hw.c     This file contains the top-level part of the hardware
  *              support functions module.
- *
- * Version:     $Id: hw.c,v 1.19 2008/10/03 01:52:04 ecki Exp $
  *
  * Maintainer:  Bernd 'eckes' Eckenfels, <net-tools@lina.inka.de>
  *
  * Author:      Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
  *              Copyright 1993 MicroWalt Corporation
  *
- *980701 {1.21}  Arnaldo C. Melo       GNU gettext instead of catgets
+ *980701         Arnaldo C. Melo       GNU gettext instead of catgets
  *
  *              This program is free software; you can redistribute it
  *              and/or  modify it under  the terms of  the GNU General

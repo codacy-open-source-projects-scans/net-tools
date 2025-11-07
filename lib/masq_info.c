@@ -1,23 +1,17 @@
 /*
  * lib/masq_info.c    This file contains a the functio masq_info
- *                      to print a table of current masquerade connections.
- *
- * NET-LIB      A collection of functions used from the base set of the
- *              NET-3 Networking Distribution for the LINUX operating
- *              system. (net-tools, net-drivers)
- *
- * Version:     $Id: masq_info.c,v 1.8 2009/09/06 22:52:01 vapier Exp $
+ *                    to print a table of current masquerade connections.
  *
  * Author:      Bernd 'eckes' Eckenfels <net-tools@lina.inka.de>
  *              Copyright 1999 Bernd Eckenfels, Germany
  *
  * Modifications:
  *
- *960217 {0.01} Bernd Eckenfels:        creatin from the code of
+ *960217        Bernd Eckenfels:        creatin from the code of
  *                                      Jos Vos' ipfwadm 2.0beta1
- *950218 {0.02} Bernd Eckenfels:        <linux/if.h> added
+ *950218        Bernd Eckenfels:        <linux/if.h> added
  *
- *980405 {0.03} Arnaldo Carvalho:       i18n CATGETS -> gettext
+ *980405        Arnaldo Carvalho:       i18n CATGETS -> gettext
  *
  *              This program is free software; you can redistribute it
  *              and/or  modify it under  the terms of  the GNU General

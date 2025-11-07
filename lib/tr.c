@@ -1,8 +1,6 @@
 /*
- * lib/tr.c   This file contains an implementation of the "Tokenring"
+ * lib/tr.c     This file contains an implementation of the "Tokenring"
  *              support functions.
- *
- * Version:     $Id: tr.c,v 1.9 2005/05/16 03:15:12 ecki Exp $
  *
  * Author:      Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
  *              Copyright 1993 MicroWalt Corporation
@@ -20,7 +18,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <net/if_arp.h>
-#include <linux/if_tr.h>
+#include <netinet/if_tr.h> /* in linux/ 2.6 */
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>

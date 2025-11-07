@@ -1,16 +1,14 @@
 /*
  * lib/frame.c        This file contains the Frame Relay support.
  *
- * Version:     $Id: frame.c,v 1.4 2000/03/05 11:26:02 philip Exp $
- *
  * Maintainer:  Bernd 'eckes' Eckenfels, <net-tools@lina.inka.de>
  *
  * Author:      Mike McLagan <mike.mclagan@linux.org>
  *
  * Changes:
  *
- *962303 {0.01} Mike McLagan :          creation
- *960413 {0.02} Bernd Eckenfels :       included in net-lib
+ *962303        Mike McLagan :          creation
+ *960413        Bernd Eckenfels :       included in net-lib
  *
  *              This program is free software; you can redistribute it
  *              and/or  modify it under  the terms of  the GNU General

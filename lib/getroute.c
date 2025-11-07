@@ -7,21 +7,19 @@
  *              NET-3 Networking Distribution for the LINUX operating
  *              system. (net-tools, net-drivers)
  *
- * Version:     $Id: getroute.c,v 1.6 2000/05/20 13:38:10 pb Exp $
- *
  * Author:      Bernd 'eckes' Eckenfels <net-tools@lina.inka.de>
  *              Copyright 1999 Bernd Eckenfels, Germany
  *
  * Modifications:
  *
- *951020 {0.10} Bernd Eckenfels:        creation
- *960202 {0.90} Bernd Eckenfels:        rewrite to use getaftype.
- *960204 {0.91} Bernd Eckenfels:        takes constant list of AFs
- *960206 {1.01} Bernd Eckenfels:        route_init will enable routing
+ *951020        Bernd Eckenfels:        creation
+ *960202        Bernd Eckenfels:        rewrite to use getaftype.
+ *960204        Bernd Eckenfels:        takes constant list of AFs
+ *960206        Bernd Eckenfels:        route_init will enable routing
  *                                      support in the AF handlers
- *960221 {1.02} Bernd Eckenfels:        renamed from route_info to getroute.c
- *960413 {1.03} Bernd Eckenfels:        new RTACTION support
- *980701 {1.04} Arnaldo C. Melo:        GNU gettext instead of catgets
+ *960221        Bernd Eckenfels:        renamed from route_info to getroute.c
+ *960413        Bernd Eckenfels:        new RTACTION support
+ *980701        Arnaldo C. Melo:        GNU gettext instead of catgets
  *
  *              This program is free software; you can redistribute it
  *              and/or  modify it under  the terms of  the GNU General
