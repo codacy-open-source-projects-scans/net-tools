@@ -2,9 +2,9 @@
 .\" Original: (mdw@tc.cornell.edu & dc6iq@insu1.etec.uni-karlsruhe.de)
 .\" Modified: Bernd.Eckenfels@inka.de
 .\" Modified: Andi Kleen ak@muc.de
-.\" Modified: Tuan Hoang tqhoang@bigfoot.com
+.\" Modified: Tuan Hoang tqhoang@yahoo.com
 .\" Modified: Brian Micek bmicek@gmail.com
-.TH NETSTAT 8 "2025-09-10" "net\-tools" "Linux System Administrator's Manual"
+.TH NETSTAT 8 "2026-05-10" "net\-tools" "Linux System Administrator's Manual"
 
 .SH NAME
 netstat \- print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships
@@ -214,8 +214,9 @@ Display additional information.  Use this option twice for maximum detail.
 Include information related to networking timers.
 .TP
 .BR \-p ", " \-\-program
-Show the PID and name of the program to which each socket belongs.
-A hyphen is shown if the socket belongs to the kernel (e.g. a kernel service,
+Show the PID and name of the program (this is not trustworthy) to which each socket belongs.
+A hyphen is shown if the user has no permission to inspect the other process,
+or if the socket belongs to the kernel (e.g. a kernel service,
 or the process has exited but the socket hasn't finished closing yet).
 .TP
 .BR \-l ", " \-\-listening
@@ -224,7 +225,7 @@ Show only listening sockets.  (These are omitted by default.)
 .BR \-a ", " \-\-all
 Show both listening and non-listening sockets.  With the
 .B \-\-interfaces
-option, show interfaces that are not up
+option, show interfaces that are not up.
 .TP
 .B \-F
 Print routing information from the FIB.  (This is the default.)
@@ -375,10 +376,9 @@ SO_WAITDATA
 .RB ( W )
 or SO_NOSPACE
 .RB ( N ).
-SO_ACCECPTON
-is used on unconnected sockets if their corresponding
-processes are waiting for a connect request. The other flags are not
-of normal interest.
+SO_ACCECPTON is used on unconnected sockets if their corresponding
+processes are waiting for a connect request.
+The other flags are not of normal interest.
 .TP
 .B "Type"
 There are several types of socket access:
@@ -409,7 +409,7 @@ Who ever knows what the future will bring us - just fill in here :-)
 
 .TP
 .B "State"
-This field will contain one of the following Keywords:
+This field will contain one of the following keywords:
 
 .RS
 .TP
@@ -545,6 +545,25 @@ which gives access to kernel status information via the following files.
 .I /proc/net/snmp
 -- statistics
 
+.SH EXAMPLES
+
+List all open TCP and UDP ports, with the corresponding process's PID (requires root).
+This lets you answer "which process is listening on port 8080?":
+
+.RS
+.EX
+.B netstat \-tulpn
+.EE
+.RE
+
+Show the route table (it's often best to pass \fB\-n\fP to display IP addresses rather than hostnames):
+
+.RS
+.EX
+.B netstat \-rn
+.EE
+.RE
+
 .SH BUGS
 Occasionally strange information may appear if a socket changes
 as it is viewed. This is unlikely to occur.
@@ -576,6 +595,6 @@ The netstat user interface was written by Fred Baumgarten
 the man page by Matt Welsh <mdw@tc.cornell.edu>.
 It was updated by
 Alan Cox <Alan.Cox@linux.org>,
-Tuan Hoang <tqhoang@bigfoot.com>, and
+Tuan Hoang <tqhoang@yahoo.com>, and
 Bernd Eckenfels <net\-tools@lina.inka.de>.
 UDPLite options were added by Brian Micek <bmicek@gmail.com>.

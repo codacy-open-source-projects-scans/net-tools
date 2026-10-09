@@ -39,7 +39,7 @@ pr_ash(const char *ptr)
 
     p[0] = '[';
     p++;
-    while (ptr[i] != 0xc9 && ptr[i] != 0xff && (i < ASH_ALEN))
+    while ((unsigned char)ptr[i] != 0xc9 && (unsigned char)ptr[i] != 0xff && (i < ASH_ALEN))
 	sprintf(p++, "%1x", ptr[i++]);
     *(p++) = ']';
     *p = 0;
@@ -108,6 +108,7 @@ pr_sash(const struct sockaddr_storage *sasp, int numeric)
     const struct sockaddr *sap = (const struct sockaddr *)sasp;
     static char buf[64];
 
+    (void)numeric; /* unused */
     if (sap->sa_family != AF_ASH)
 	return safe_strncpy(buf, "[NONE SET]", 64);
     return pr_ash(sap->sa_data);

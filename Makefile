@@ -57,7 +57,7 @@ endif
 
 # Compiler and Linker Options
 CFLAGS ?= -O2 -g
-CFLAGS += -Wall
+CFLAGS += -Wall -Wtype-limits -Wunused-parameter
 CFLAGS += -fno-strict-aliasing # code needs a lot of work before strict aliasing is safe
 CPPFLAGS += -D_GNU_SOURCE
 # Turn on transparent support for LFS
@@ -191,8 +191,8 @@ slattach:	$(NET_LIB) slattach.o
 plipconfig:	$(NET_LIB) plipconfig.o
 		$(CC) $(CFLAGS) $(LDFLAGS) -o $@ plipconfig.o $(NLIB) $(LDLIBS)
 
-netstat:	$(NET_LIB) netstat.o statistics.o
-		$(CC) $(CFLAGS) $(LDFLAGS) -o $@ netstat.o statistics.o $(NLIB) $(SELIB) $(LDLIBS)
+netstat:	$(NET_LIB) netstat.o statistics.o lib/escape.o
+		$(CC) $(CFLAGS) $(LDFLAGS) -o $@ netstat.o statistics.o lib/escape.o $(NLIB) $(SELIB) $(LDLIBS)
 
 iptunnel:	$(NET_LIB) iptunnel.o
 		$(CC) $(CFLAGS) $(LDFLAGS) -o $@ iptunnel.o $(NLIB) $(LDLIBS)
